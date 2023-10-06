@@ -37,11 +37,49 @@ def main():
     loadImages() # LOADING THE IMAGES
 
     running = True
+
+    sqSelected = ()  # THIS WILL KEEP THE TRACK OF THE LAST SQUARE SELECTED IN TUPLE (ROW, COL)
+    playerClicks = []    # THIS WILL KEEP THE TRACK OF PLAYER CLICKS LIKE TWO TUPLES [(6, 4), (4, 4)]
+
     while running:
         # THIS FUNCTION WILL HELP TO QUIT THE GAME
         for e in p.event.get():
             if e.type == p.QUIT:
                 running = False
+
+            elif e.type == p.MOUSEBUTTONDOWN:
+
+                # THIS WILL GIVE THE (x, y) LOCATION OF THE MOUSE 
+                location = p.mouse.get_pos() 
+
+                col = location[0]//SQ_SIZE   # THIS WILL GIVE US THE COLUMNS
+                row = location[1]//SQ_SIZE   # THIS WILL GIVE US THE ROW
+
+                # THIS LOGIC WILL HELP IF WE DOUBLE CLICK ON THE SINGLE PLACE
+                if sqSelected == (row, col):
+
+                    # IF WE DOUBLE CLICK ON THE SAME BOX TWICE THE MOVE WILL NOT BE CONSIDERD
+                    sqSelected = ()
+                    playerClicks = []
+
+                else:
+
+                    # THE ROW AND COL NO WILL BE ADDED TO THE SEQUENCE AS WE WILL PLAY THE MOVE
+                    sqSelected = (row, col)
+                    
+                    # THE WHOLE MOVE WILL BE ADDED TO THE LIST 
+                    playerClicks.append(sqSelected)
+                
+                if len(playerClicks) == 2:
+                    move = ChessEngine.Move(playerClicks[0], playerClicks[1], gs.board)
+
+                    print(move.getChessNotation())
+                    gs.makeMove(move)
+
+                    # RESTARTING THE MOVES AND SEQUENCES AFTER THE MOVE IS PLAYED
+                    sqSelected = ()
+                    playerClicks = []
+
 
         # THIS WILL EXECUTE AND SCREEN AND PIECES WILL BE CREATED ON INITIALIZNG THE BOARD
         drawGamestate(screen, gs)
