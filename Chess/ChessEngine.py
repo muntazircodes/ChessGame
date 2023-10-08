@@ -28,6 +28,18 @@ class GameState():
 
             self.whiteToMove = not self.whiteToMove
 
+    # THE FUNCTION TO UNDO THE MOVE
+    def undoMove(self):
+        if len(self.moveLog)!= 0:   # THE MOVE LIST MUST NOT BE EMPTY
+            move = self.moveLog.pop() # THE POP FUNCTION WILL AUTOMATICLY POP THE LAST ELEMENT OF LIST THE LIST SO THE MOVE IS UNDO
+
+            self.board[move.startRow][move.startCol] = move.pieceMoved
+            self.board[move.endRow][move.endCol] = move.pieceCaptured
+
+            self.whiteToMove = not self.whiteToMove
+
+
+
 class Move():
 
     # MAPS OF KEY AND VALUES TO CREATE NOTATION
