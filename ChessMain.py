@@ -79,8 +79,13 @@ def main():
                     # RESTARTING THE MOVES AND SEQUENCES AFTER THE MOVE IS PLAYED
                     sqSelected = ()
                     playerClicks = []
+            # KEY PRESS FUNCTIONS
+            elif e.type == p.KEYDOWN:
 
+                if e.key == p.K_z:  # IF WE PRESS Z KEY
+                    gs.undoMove() # THE UNDO MOVE WILL BE EXECUTED
 
+                    
         # THIS WILL EXECUTE AND SCREEN AND PIECES WILL BE CREATED ON INITIALIZNG THE BOARD
         drawGamestate(screen, gs)
         clock.tick(MAX_FPS)
