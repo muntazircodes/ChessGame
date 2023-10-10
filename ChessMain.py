@@ -34,6 +34,9 @@ def main():
     clock = p.time.Clock()  
     screen.fill(p.Color("white")) # COLOR OF THE BG SCREEN
     gs = ChessEngine.GameState() # CALLING THE MAIN GAMESTATE FUNCTION
+
+    validMoves = gs.getValidMoves() # GETTING ALL THE VALID MOVES HERE
+    moveMade = False # FLAG VARIABLE TO CHECK WETHER THE MOVE IS MADE OR NOT
     loadImages() # LOADING THE IMAGES
 
     running = True
@@ -74,7 +77,11 @@ def main():
                     move = ChessEngine.Move(playerClicks[0], playerClicks[1], gs.board)
 
                     print(move.getChessNotation())
-                    gs.makeMove(move)
+
+                    # CHECKING IF THE MOVE IN IS THE VALIDMOVES TO PLAY OR NOT
+                    if move in validMoves:
+                        gs.makeMove(move)
+                        moveMade = True
 
                     # RESTARTING THE MOVES AND SEQUENCES AFTER THE MOVE IS PLAYED
                     sqSelected = ()
@@ -84,8 +91,17 @@ def main():
 
                 if e.key == p.K_z:  # IF WE PRESS Z KEY
                     gs.undoMove() # THE UNDO MOVE WILL BE EXECUTED
+                    validMoves = gs.getValidMoves()
+                    moveMade = True
+                
 
-                    
+
+        # FOR PLAYING THE MOVES
+        if moveMade:
+            validMoves = gs.getValidMoves()
+            moveMade = False
+
+ 
         # THIS WILL EXECUTE AND SCREEN AND PIECES WILL BE CREATED ON INITIALIZNG THE BOARD
         drawGamestate(screen, gs)
         clock.tick(MAX_FPS)
