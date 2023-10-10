@@ -38,6 +38,31 @@ class GameState():
 
             self.whiteToMove = not self.whiteToMove
 
+    def getValidMoves(self):   # ALL THE MOVES CONSIDERING CHECKS
+        return self.getAllPossibleMoves()
+
+    def getAllPossibleMoves(self): # ALL THE MOVES WITHOUT CONSIDERING CHECKS
+        moves = [Move((6, 4), (4, 4), self.board)] # ADDED A MOVE FOR TESTING PURPOUSE
+        for r in range(len(self.board)): # NUMBER OF ROWS 
+            for c in range(len(self.board[r])): # NUMBER OF COLS IN A GIVEN ROW
+                turn = self.board[r][c][0] # FOR GETTING THE COLOR OF PIECE THAT IS BIENG PLAYED
+                
+                if (turn == "w" and self.whiteToMove) or (turn == "b" and not self.whiteToMove): # TOGGLE THE TURN BETWEEN THE PLAYES
+                    piece = self.board[r][c][1] # GIVES THE NAME OF THE PIECE
+
+                    if piece == "p": # IF PIECE IS PAWN
+                        self.getPawnMoves(r, c, moves)
+                    elif piece == "R": # IF PIECE IS ROOK
+                        self.getRookMoves(r, c, moves)
+        return moves
+
+    # MOVES FOR PAWNS
+    def getPawnMoves(self, r, c, moves):
+        pass
+
+    # MOVES FOR ROOK
+    def getRookMoves(self, r, c, moves):
+        pass
 
 
 class Move():
@@ -62,6 +87,14 @@ class Move():
 
         self.pieceMoved = board[self.startRow][self.startCol]
         self.pieceCaptured = board[self.endRow][self.endCol]
+
+        self.moveID = self.startRow * 1000 + self.startCol * 100 + self.endRow * 10 + self.endCol
+
+    def __eq__(self, other):
+        if isinstance(other, Move):
+            return self.moveID == other.moveID
+        return False
+    
 
     def getChessNotation(self):
 
