@@ -66,10 +66,12 @@ class GameState():
 
                 if r == 6 and self.board[r - 2][c] == "__":  # 2 SQUARE PAWN ADVANCE
                     moves.append(Move((r, c), (r-2, c), self.board))
-            if c-1 >= 0:
+
+            if c - 1 >= 0: # CAPTURE TO THE LEFT
                 if self.board[r -1][c-1][0] == "b":
                     moves.append(Move((r, c), (r-1, c-1), self.board))
-            if c+1 <= 7:
+
+            if c + 1 <= 7: # CAPTURE TO THE RIGHT
                 if self.board[r - 1][c + 1][0] == "b":
                     moves.append(Move((r, c), (r - 1, c + 1), self.board))
         else:
@@ -78,17 +80,55 @@ class GameState():
 
                 if r == 1 and self.board[r + 2][c] == "__":  
                     moves.append(Move((r, c), (r + 2, c), self.board))
-            if c + 1 <= 7:
+
+            if c + 1 <= 7:  # CAPTURE TO THE RIGHT
                 if self.board[r +1][c + 1][0] == "w":
                     moves.append(Move((r, c), (r + 1, c + 1), self.board))
-            if c - 1 >= 0:  
+
+                    
+            if c - 1 >= 0:  # CAPTURE TO THE LEFT
                 if self.board[r + 1][c - 1][0] == "w":  
                     moves.append(Move((r, c), (r + 1, c - 1), self.board))  
 
 
     # MOVES FOR ROOK
+
+    # DEFINE A METHOD NAMED 'GETROOKMOVES' WHICH TAKES SELF (REFERRING TO THE INSTANCE OF THE CLASS), 
+    # R (ROW POSITION OF THE ROOK), C (COLUMN POSITION OF THE ROOK), AND MOVES (LIST TO STORE POSSIBLE MOVES).
     def getRookMoves(self, r, c, moves):
-        pass
+        # DEFINE THE FOUR DIRECTIONS ROOK CAN MOVE: UP, LEFT, DOWN, AND RIGHT.
+        direction = ((-1, 0), (0, -1), (1, 0), (0, 1))
+        
+        # DETERMINE THE COLOR OF THE ENEMY PIECES BASED ON WHOSE TURN IT IS.
+        enemyColor = "b" if self.whiteToMove else "w"
+        
+        # LOOP THROUGH EACH DIRECTION.
+        for d in direction:
+            # LOOP THROUGH A RANGE OF DISTANCES THE ROOK CAN MOVE, FROM 1 TO 7.
+            for i in range(1, 8):
+                # CALCULATE THE POTENTIAL ENDING ROW AND COLUMN FOR THE MOVE.
+                endRow = r + d[0] * i 
+                endCol = c + d[1] * i
+                
+                # CHECK IF THE POTENTIAL MOVE IS WITHIN THE BOUNDS OF THE BOARD.
+                if 0 <= endRow < 8 and 0 <= endCol < 8:
+                    # GET THE PIECE AT THE POTENTIAL ENDING POSITION.
+                    endPiece = self.board[endRow][endCol]
+                    
+                    # IF THE ENDING POSITION IS EMPTY, ADD THE MOVE TO THE LIST OF POSSIBLE MOVES.
+                    if endPiece == "__":
+                        moves.append(Move((r, c), (endRow, endCol), self.board))
+                    # IF THE ENDING POSITION CONTAINS AN ENEMY PIECE, ADD THE MOVE AND STOP LOOKING IN THIS DIRECTION.
+                    elif endPiece[0] == enemyColor:
+                        moves.append(Move((r, c), (endRow, endCol), self.board))
+                        break
+                    # IF THE ENDING POSITION CONTAINS A FRIENDLY PIECE, STOP LOOKING IN THIS DIRECTION.
+                    else:
+                        break
+                else:
+                    # IF THE POTENTIAL MOVE IS OUT OF BOUNDS, STOP LOOKING IN THIS DIRECTION.
+                    break
+
 
 
     # MOVES FOR KNIGHT
