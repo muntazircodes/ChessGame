@@ -16,6 +16,9 @@ class GameState():
                 ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]
             ]
         
+        self.moveFunction = {'p':self.getPawnMoves, 'R': self.getRookMoves, 'N': self.getKnightMoves,
+                             'B': self.getBishopMoves, 'Q':self.getQueenMoves, 'K': self.getKingMoves}
+        
         # THIS WILL HELP TO TOGGLE AND CHANGING THE TURNS AFTER WE WILL CREATE A FUNCTION LATER ON
         self.whiteToMove = True
         # THIS WILL KEEP THE TRACK OF MOVES
@@ -49,20 +52,52 @@ class GameState():
                 
                 if (turn == "w" and self.whiteToMove) or (turn == "b" and not self.whiteToMove): # TOGGLE THE TURN BETWEEN THE PLAYES
                     piece = self.board[r][c][1] # GIVES THE NAME OF THE PIECE
+                    self.moveFunction[piece](r, c, moves)
 
-                    if piece == "p": # IF PIECE IS PAWN
-                        self.getPawnMoves(r, c, moves)
-                    elif piece == "R": # IF PIECE IS ROOK
-                        self.getRookMoves(r, c, moves)
+                  
         return moves
 
     # MOVES FOR PAWNS
     def getPawnMoves(self, r, c, moves):
-        pass
+        if self.whiteToMove: # WHEN WHITE PAWN MOVES
+
+            if self.board[r - 1][c] == "__":  # 1 SQUARE PAWN ADVANCE
+                moves.append(Move((r, c), (r-1, c) , self.board))
+
+                if r == 6 and self.board[r - 2][c] == "__":  # 2 SQUARE PAWN ADVANCE
+                    moves.append(Move((r, c), (r-2, c), self.board))
+            if c-1 >= 0:
+                if self.board[r -1][c-1][0] == "b":
+                    moves.append(Move((r, c), (r-1, c-1), self.board))
+            if c+1 <= 7:
+                if self.board[r - 1][c + 1][0] == "b":
+                    moves.append(Move((r, c), (r - 1, c + 1), self.board))
+        else:
+            pass   
+
+
 
     # MOVES FOR ROOK
     def getRookMoves(self, r, c, moves):
         pass
+
+
+    # MOVES FOR KNIGHT
+    def getKnightMoves(self, r, c, moves):
+        pass
+
+    # MOVES FOR BISHOP
+    def getBishopMoves(self, r, c, moves):
+        pass
+
+    # MOVES FOR QUEEN 
+    def getQueenMoves(self, r, c, moves):
+        pass
+
+    # MOVES FOR KING
+    def getKingMoves(self, r, c, moves):
+        pass
+
 
 
 class Move():
