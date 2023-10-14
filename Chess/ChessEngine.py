@@ -179,11 +179,20 @@ class GameState():
 
     # MOVES FOR QUEEN 
     def getQueenMoves(self, r, c, moves):
-        pass
+        self.getRookMoves(r, c, moves)
+        self.getBishopMoves(r, c, moves)
 
     # MOVES FOR KING
     def getKingMoves(self, r, c, moves):
-        pass
+        knigMoves = ((-1,  -1), (-1,  0), (-1, 1), (0, -1), (0, 1), (1,  -1), (1, 0), (1,  1))
+        allyColor = "w" if self.whiteToMove else "b"
+        for i in range(8):
+            endRow = r + knigMoves[i][0]
+            endCol = c + knigMoves[i][1]
+            if 0 <= endRow < 8 and 0 <= endCol < 8:
+                endPiece = self.board[endRow][endCol]
+                if endPiece[0] != allyColor:
+                    moves.append(Move((r, c), (endRow, endCol), self.board))
 
 
 
