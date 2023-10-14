@@ -86,6 +86,8 @@ def main():
                         # RESTARTING THE MOVES AND SEQUENCES AFTER THE MOVE IS PLAYED
                         sqSelected = ()
                         playerClicks = []
+                    else:
+                        playerClicks = [sqSelected]
             # KEY PRESS FUNCTIONS
             elif e.type == p.KEYDOWN:
 
