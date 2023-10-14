@@ -83,9 +83,9 @@ def main():
                         gs.makeMove(move)
                         moveMade = True
 
-                    # RESTARTING THE MOVES AND SEQUENCES AFTER THE MOVE IS PLAYED
-                    sqSelected = ()
-                    playerClicks = []
+                        # RESTARTING THE MOVES AND SEQUENCES AFTER THE MOVE IS PLAYED
+                        sqSelected = ()
+                        playerClicks = []
             # KEY PRESS FUNCTIONS
             elif e.type == p.KEYDOWN:
 
