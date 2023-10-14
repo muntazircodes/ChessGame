@@ -130,14 +130,44 @@ class GameState():
                     break
 
 
-
     # MOVES FOR KNIGHT
     def getKnightMoves(self, r, c, moves):
         pass
 
     # MOVES FOR BISHOP
     def getBishopMoves(self, r, c, moves):
-        pass
+        # DEFINE THE FOUR DIAGONALS IN WHICH BISHOP CAN MOVE:
+        direction = ((-1, -1), (-1, 1), (1, -1), (1, 1))
+        
+        # DETERMINE THE COLOR OF THE ENEMY PIECES BASED ON WHOSE TURN IT IS.
+        enemyColor = "b" if self.whiteToMove else "w"
+        
+        # LOOP THROUGH EACH DIRECTION.
+        for d in direction:
+            # LOOP THROUGH A RANGE OF DISTANCES THE ROOK CAN MOVE, FROM 1 TO 7.
+            for i in range(1, 8):
+                # CALCULATE THE POTENTIAL ENDING ROW AND COLUMN FOR THE MOVE.
+                endRow = r + d[0] * i 
+                endCol = c + d[1] * i
+                
+                # CHECK IF THE POTENTIAL MOVE IS WITHIN THE BOUNDS OF THE BOARD.
+                if 0 <= endRow < 8 and 0 <= endCol < 8:
+                    # GET THE PIECE AT THE POTENTIAL ENDING POSITION.
+                    endPiece = self.board[endRow][endCol]
+                    
+                    # IF THE ENDING POSITION IS EMPTY, ADD THE MOVE TO THE LIST OF POSSIBLE MOVES.
+                    if endPiece == "__":
+                        moves.append(Move((r, c), (endRow, endCol), self.board))
+                    # IF THE ENDING POSITION CONTAINS AN ENEMY PIECE, ADD THE MOVE AND STOP LOOKING IN THIS DIRECTION.
+                    elif endPiece[0] == enemyColor:
+                        moves.append(Move((r, c), (endRow, endCol), self.board))
+                        break
+                    # IF THE ENDING POSITION CONTAINS A FRIENDLY PIECE, STOP LOOKING IN THIS DIRECTION.
+                    else:
+                        break
+                else:
+                    # IF THE POTENTIAL MOVE IS OUT OF BOUNDS, STOP LOOKING IN THIS DIRECTION.
+                    break
 
     # MOVES FOR QUEEN 
     def getQueenMoves(self, r, c, moves):
