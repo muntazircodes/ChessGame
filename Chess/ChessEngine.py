@@ -24,25 +24,83 @@ class GameState():
         # THIS WILL KEEP THE TRACK OF MOVES
         self.moveLog = []
 
+        # KEEPING TRACK OF KING LOCATIONS
+        self.whiteKingLocation = (7, 4) # WHITE KING'S INITIAL LOCATION AT ROW 7, COLUMN 4
+        self.blackKingLocation = (0, 4) # BLACK KING'S INITIAL LOCATION AT ROW 0, COLUMN 4
+
     def makeMove(self, move):
-            self.board[move.startRow][move.startCol] = "__"
-            self.board[move.endRow][move.endCol] = move.pieceMoved
-            self.moveLog.append(move)
+        # UPDATE THE BOARD AFTER A MOVE
+        self.board[move.startRow][move.startCol] = "__"
+        self.board[move.endRow][move.endCol] = move.pieceMoved
+        self.moveLog.append(move) # ADD MOVE TO THE LOG
 
-            self.whiteToMove = not self.whiteToMove
+        self.whiteToMove = not self.whiteToMove # SWITCH TURN
 
-    # THE FUNCTION TO UNDO THE MOVE
+        # UPDATE KING'S LOCATION AFTER MOVE
+        if move.pieceMoved == "wK":
+            self.whiteKingLocation =(move.endRow, move.endCol) # UPDATE WHITE KING'S LOCATION
+        elif move.pieceMoved == "bK":
+            self.blackKingLocation = (move.endRow, move.endCol) # UPDATE BLACK KING'S LOCATION
+
+    # FUNCTION TO UNDO A MOVE
     def undoMove(self):
-        if len(self.moveLog)!= 0:   # THE MOVE LIST MUST NOT BE EMPTY
-            move = self.moveLog.pop() # THE POP FUNCTION WILL AUTOMATICLY POP THE LAST ELEMENT OF LIST THE LIST SO THE MOVE IS UNDO
+        if len(self.moveLog) != 0: # ENSURE THE MOVE LIST IS NOT EMPTY
+            move = self.moveLog.pop() # GET THE LAST MOVE FROM THE LIST
 
+            # REVERT THE BOARD TO THE PREVIOUS STATE
             self.board[move.startRow][move.startCol] = move.pieceMoved
             self.board[move.endRow][move.endCol] = move.pieceCaptured
 
+            self.whiteToMove = not self.whiteToMove # SWITCH TURN
+
+            # REVERT KING'S LOCATION AFTER UNDOING MOVE
+            if move.pieceMoved == "wK":
+                self.whiteKingLocation =(move.startRow, move.startCol) # REVERT WHITE KING'S LOCATION
+            elif move.pieceMoved == "bK":
+                self.blackKingLocation = (move.startRow, move.startCol) # REVERT BLACK KING'S LOCATION
+
+    # FUNCTION TO GET VALID MOVES CONSIDERING CHECKS
+    def getValidMoves(self):
+        moves = self.getAllPossibleMoves() # GENERATE ALL POSSIBLE MOVES
+
+        valid_moves = []
+
+        for i in range(len(moves)-1, -1, -1): # ITERATE THROUGH THE MOVES
+            self.makeMove(moves[i]) # MAKE THE MOVE
+
+            # SWITCH TURN TO GET OPPONENT'S MOVES
             self.whiteToMove = not self.whiteToMove
 
-    def getValidMoves(self):   # ALL THE MOVES CONSIDERING CHECKS
-        return self.getAllPossibleMoves()
+            # CHECK IF THE MOVE PUTS THE KING IN CHECK
+            if self.inCheck():
+                moves.remove(moves[i]) # IF SO, IT'S NOT A VALID MOVE
+
+            # SWITCH TURN BACK AND UNDO THE MOVE
+            self.whiteToMove = not self.whiteToMove
+            self.undoMove()
+
+        return moves
+
+    # FUNCTION TO CHECK IF THE CURRENT PLAYER IS IN CHECK
+    def inCheck(self):
+        if self.whiteToMove:
+            return self.squaresUnderAttack(self.whiteKingLocation[0], self.whiteKingLocation[1])
+        else:
+            return self.squaresUnderAttack(self.blackKingLocation[0], self.blackKingLocation[1])
+
+    # FUNCTION TO CHECK IF A SQUARE IS UNDER ATTACK
+    def squaresUnderAttack(self, r, c):
+        self.whiteToMove = not self.whiteToMove # SWITCH TURN
+
+        oppMoves = self.getAllPossibleMoves() # GET OPPONENT'S MOVES
+
+        self.whiteToMove = not self.whiteToMove # SWITCH TURN BACK
+
+        for move in oppMoves: # CHECK IF ANY MOVE IS ATTACKING THE SQUARE
+            if move.endRow == r and move.endCol == c:
+                return True
+
+        return False # SQUARE IS NOT UNDER ATTACK
 
     def getAllPossibleMoves(self): # ALL THE MOVES WITHOUT CONSIDERING CHECKS
         moves = [Move((6, 4), (4, 4), self.board)] # ADDED A MOVE FOR TESTING PURPOUSE
