@@ -28,6 +28,9 @@ class GameState():
         self.whiteKingLocation = (7, 4) # WHITE KING'S INITIAL LOCATION AT ROW 7, COLUMN 4
         self.blackKingLocation = (0, 4) # BLACK KING'S INITIAL LOCATION AT ROW 0, COLUMN 4
 
+        self.checkMate = False # CHECK IF THE KING IS IN CHECK AND THERE IS NO VALID MOVES TO PLAY
+        self.staleMate = False # CHECK IF THE KING IS NOT IN CHECK AND THERE IS NO MOVES TO PLAY
+
     def makeMove(self, move):
         # UPDATE THE BOARD AFTER A MOVE
         self.board[move.startRow][move.startCol] = "__"
@@ -78,6 +81,17 @@ class GameState():
             # SWITCH TURN BACK AND UNDO THE MOVE
             self.whiteToMove = not self.whiteToMove
             self.undoMove()
+
+        if len(moves) == 0:
+
+            if self.inCheck():
+                
+                self.checkMate = True
+            else:
+                self.staleMate = False
+        else:
+            self.checkMate = False
+            self.staleMate = False
 
         return moves
 
