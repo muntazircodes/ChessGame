@@ -84,7 +84,7 @@ class GameState():
 
         if len(moves) == 0:
 
-            if self.inCheck():
+            if self.inCheck:
                 
                 self.checkMate = True
             else:
